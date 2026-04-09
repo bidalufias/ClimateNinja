@@ -13,6 +13,7 @@ interface GameCanvasProps {
   onGameOver: (results: PlayerResults[], mode: GameMode) => void;
   onChallengerNameConfirmed: (index: number, name: string) => void;
   isPaused: boolean;
+  speed?: number;
 }
 
 type Phase = 'countdown' | 'playing' | 'champion-round-end' | 'champion-name-entry' | 'champion-countdown';
@@ -20,7 +21,7 @@ type Phase = 'countdown' | 'playing' | 'champion-round-end' | 'champion-name-ent
 const CANVAS_WIDTH = 1280;
 const CANVAS_HEIGHT = 720;
 
-export default function GameCanvas({ mode, playerNames, onStateUpdate, onGameOver, onChallengerNameConfirmed, isPaused }: GameCanvasProps) {
+export default function GameCanvas({ mode, playerNames, onStateUpdate, onGameOver, onChallengerNameConfirmed, isPaused, speed = 1 }: GameCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<GameEngine | null>(null);
   const callbacksRef = useRef({ onStateUpdate, onGameOver });
@@ -49,7 +50,7 @@ export default function GameCanvas({ mode, playerNames, onStateUpdate, onGameOve
       onChampionRoundEnd: handleChampionRoundEnd,
     };
 
-    const engine = new GameEngine(canvas, mode, callbacks, playerNames);
+    const engine = new GameEngine(canvas, mode, callbacks, playerNames, speed);
     engineRef.current = engine;
 
     return () => {
@@ -60,7 +61,7 @@ export default function GameCanvas({ mode, playerNames, onStateUpdate, onGameOve
     // below, so we must not recreate the engine on every challenger name update or
     // the pending champion round state (pendingChallenger) will be lost.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, handleChampionRoundEnd]);
+  }, [mode, speed, handleChampionRoundEnd]);
 
   // Sync player name changes to the engine without recreating it
   useEffect(() => {

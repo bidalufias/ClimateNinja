@@ -14,7 +14,7 @@ export const POLLUTANTS: GameObjectDef[] = [
 
 export const PROTECTED: GameObjectDef[] = [
   { id: 'tree', emoji: '🌳', label: 'Tree', kind: 'protected', color: '#27ae60', splatColor: '#2ecc71', size: 60, points: 0 },
-  { id: 'solar', emoji: '☀️', label: 'Solar Panel', kind: 'protected', color: '#f39c12', splatColor: '#f1c40f', size: 58, points: 0 },
+  { id: 'solar', emoji: '🌞', label: 'Solar Panel', kind: 'protected', color: '#f39c12', splatColor: '#f1c40f', size: 58, points: 0 },
   { id: 'earth', emoji: '🌍', label: 'Earth', kind: 'protected', color: '#2980b9', splatColor: '#3498db', size: 62, points: 0 },
   { id: 'recycle', emoji: '♻️', label: 'Recycling', kind: 'protected', color: '#27ae60', splatColor: '#2ecc71', size: 54, points: 0 },
 ];

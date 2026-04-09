@@ -4,6 +4,8 @@ import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import PublicIcon from '@mui/icons-material/Public';
 import PersonIcon from '@mui/icons-material/Person';
@@ -15,11 +17,21 @@ import type { GameMode } from '../types/game';
 interface StartScreenProps {
   onSelectMode: (mode: GameMode) => void;
   onLeaderboard: () => void;
+  speed: number;
+  onSpeedChange: (v: number) => void;
 }
 
 const POLLUTANTS = ['⛏️', '🛢️', '🏭', '🚗', '🛍️', '💨', '⛽', '🌡️'];
-const PROTECTED_ITEMS = ['🌳', '☀️', '🌍', '♻️'];
+const PROTECTED_ITEMS = ['🌳', '🌞', '🌍', '♻️'];
 const POWERUPS = ['💚', '⏳', '✨', '🛡️', '🌪️'];
+
+const SPEEDS = [
+  { value: 0.5,  label: 'Very Slow' },
+  { value: 0.75, label: 'Slow' },
+  { value: 1.0,  label: 'Standard' },
+  { value: 1.25, label: 'Fast' },
+  { value: 1.5,  label: 'Very Fast' },
+];
 
 const MODES: Array<{ mode: GameMode; label: string; subtitle: string; description: string; icon: React.ReactNode; color: string }> = [
   { mode: '1p', label: '1 Player', subtitle: 'Solo Challenge', description: 'Play alone against the planet. Beat your high score.', icon: <PersonIcon sx={{ fontSize: 32 }} />, color: '#4CAF50' },
@@ -28,7 +40,7 @@ const MODES: Array<{ mode: GameMode; label: string; subtitle: string; descriptio
   { mode: 'champion', label: 'Champion', subtitle: 'Winner Stays', description: 'Defend your throne. Win and keep your streak alive.', icon: <EmojiEventsIcon sx={{ fontSize: 32 }} />, color: '#FFD700' },
 ];
 
-export default function StartScreen({ onSelectMode, onLeaderboard }: StartScreenProps) {
+export default function StartScreen({ onSelectMode, onLeaderboard, speed, onSpeedChange }: StartScreenProps) {
   return (
     <Box
       sx={{
@@ -38,7 +50,7 @@ export default function StartScreen({ onSelectMode, onLeaderboard }: StartScreen
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'linear-gradient(180deg, #0a1628 0%, #0d2137 50%, #071020 100%)',
+        background: 'linear-gradient(180deg, #1a2e4a 0%, #1e3558 50%, #12213a 100%)',
         position: 'relative',
         overflow: 'hidden',
         gap: 3,
@@ -59,7 +71,7 @@ export default function StartScreen({ onSelectMode, onLeaderboard }: StartScreen
             transform: 'translateX(-50%)',
             width: '120%',
             height: '40%',
-            background: 'radial-gradient(ellipse at center bottom, rgba(39,174,96,0.12) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse at center bottom, rgba(39,174,96,0.16) 0%, transparent 70%)',
           },
         }}
       />
@@ -106,7 +118,7 @@ export default function StartScreen({ onSelectMode, onLeaderboard }: StartScreen
           <Card
             key={mode}
             sx={{
-              background: 'rgba(255,255,255,0.04)',
+              background: 'rgba(255,255,255,0.05)',
               border: `1px solid ${color}33`,
               borderRadius: 3,
               transition: 'all 0.2s',
@@ -131,6 +143,42 @@ export default function StartScreen({ onSelectMode, onLeaderboard }: StartScreen
         ))}
       </Box>
 
+      {/* Speed selector */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+        <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+          Game Speed
+        </Typography>
+        <ToggleButtonGroup
+          value={speed}
+          exclusive
+          onChange={(_e, v) => { if (v !== null) onSpeedChange(v as number); }}
+          size="small"
+          sx={{
+            '& .MuiToggleButton-root': {
+              color: 'text.secondary',
+              borderColor: 'rgba(255,255,255,0.12)',
+              px: 2,
+              py: 0.5,
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              letterSpacing: '0.05em',
+              '&.Mui-selected': {
+                color: '#4caf50',
+                bgcolor: 'rgba(76,175,80,0.15)',
+                borderColor: 'rgba(76,175,80,0.5)',
+              },
+              '&:hover': { bgcolor: 'rgba(255,255,255,0.06)' },
+            },
+          }}
+        >
+          {SPEEDS.map((s) => (
+            <ToggleButton key={s.value} value={s.value}>
+              {s.label}
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
+      </Box>
+
       <Box
         sx={{
           display: 'flex',
@@ -138,9 +186,9 @@ export default function StartScreen({ onSelectMode, onLeaderboard }: StartScreen
           flexWrap: 'wrap',
           justifyContent: 'center',
           p: 2,
-          background: 'rgba(255,255,255,0.02)',
+          background: 'rgba(255,255,255,0.03)',
           borderRadius: 3,
-          border: '1px solid rgba(39,174,96,0.12)',
+          border: '1px solid rgba(39,174,96,0.15)',
           maxWidth: 700,
           width: '100%',
         }}

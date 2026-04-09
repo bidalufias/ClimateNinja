@@ -41,7 +41,7 @@ export default function CountdownOverlay({ onDone }: CountdownOverlayProps) {
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 50,
-        background: 'rgba(0,0,0,0.55)',
+        background: 'rgba(0,0,0,0.35)',
         pointerEvents: 'none',
       }}
     >

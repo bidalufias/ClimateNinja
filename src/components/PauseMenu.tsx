@@ -83,7 +83,7 @@ export default function PauseMenu({ onResume, onQuit }: PauseMenuProps) {
               },
             }}
           >
-            Quit to Menu
+            Change Mode
           </Button>
         </Box>
       </Box>

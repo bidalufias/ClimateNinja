@@ -24,6 +24,7 @@ export default function App() {
   const [slowMo, setSlowMo] = useState(false);
   const [frenzy, setFrenzy] = useState(false);
   const [results, setResults] = useState<PlayerResults[]>([]);
+  const [gameSpeed, setGameSpeed] = useState(1.0);
 
   const handleSelectMode = useCallback((mode: GameMode) => {
     setGameMode(mode);
@@ -108,15 +109,44 @@ export default function App() {
         }}
       >
         {screen === 'modeselect' && (
-          <StartScreen onSelectMode={handleSelectMode} onLeaderboard={handleLeaderboard} />
+          <Box
+            key="modeselect"
+            sx={{
+              width: '100%', height: '100%', position: 'absolute', inset: 0,
+              animation: 'screenEnter 0.25s ease',
+              '@keyframes screenEnter': {
+                from: { opacity: 0, transform: 'scale(0.97)' },
+                to: { opacity: 1, transform: 'scale(1)' },
+              },
+            }}
+          >
+            <StartScreen
+              onSelectMode={handleSelectMode}
+              onLeaderboard={handleLeaderboard}
+              speed={gameSpeed}
+              onSpeedChange={setGameSpeed}
+            />
+          </Box>
         )}
 
         {screen === 'nameentry' && (
-          <NameEntryScreen
-            mode={gameMode}
-            onStart={handleNamesConfirmed}
-            onBack={handleBackToModeSelect}
-          />
+          <Box
+            key="nameentry"
+            sx={{
+              width: '100%', height: '100%', position: 'absolute', inset: 0,
+              animation: 'screenEnter 0.25s ease',
+              '@keyframes screenEnter': {
+                from: { opacity: 0, transform: 'scale(0.97)' },
+                to: { opacity: 1, transform: 'scale(1)' },
+              },
+            }}
+          >
+            <NameEntryScreen
+              mode={gameMode}
+              onStart={handleNamesConfirmed}
+              onBack={handleBackToModeSelect}
+            />
+          </Box>
         )}
 
         {isGameRunning && (
@@ -129,6 +159,7 @@ export default function App() {
               onGameOver={handleGameOver}
               onChallengerNameConfirmed={handleChallengerNameConfirmed}
               isPaused={isPaused}
+              speed={gameSpeed}
             />
             <GameHUD
               players={players}
@@ -145,7 +176,18 @@ export default function App() {
         )}
 
         {screen === 'gameover' && (
-          <Box sx={{ width: '100%', height: '100%', position: 'relative', bgcolor: '#0a1628' }}>
+          <Box
+            key="gameover"
+            sx={{
+              width: '100%', height: '100%', position: 'absolute', inset: 0,
+              bgcolor: '#12213a',
+              animation: 'screenEnter 0.25s ease',
+              '@keyframes screenEnter': {
+                from: { opacity: 0, transform: 'scale(0.97)' },
+                to: { opacity: 1, transform: 'scale(1)' },
+              },
+            }}
+          >
             <GameOver
               results={results}
               mode={gameMode}
@@ -158,7 +200,19 @@ export default function App() {
         )}
 
         {screen === 'leaderboard' && (
-          <Leaderboard onBack={() => setScreen(prevScreenRef.current === 'gameover' ? 'gameover' : 'modeselect')} />
+          <Box
+            key="leaderboard"
+            sx={{
+              width: '100%', height: '100%', position: 'absolute', inset: 0,
+              animation: 'screenEnter 0.25s ease',
+              '@keyframes screenEnter': {
+                from: { opacity: 0, transform: 'scale(0.97)' },
+                to: { opacity: 1, transform: 'scale(1)' },
+              },
+            }}
+          >
+            <Leaderboard onBack={() => setScreen(prevScreenRef.current === 'gameover' ? 'gameover' : 'modeselect')} />
+          </Box>
         )}
       </Box>
     </ThemeProvider>
