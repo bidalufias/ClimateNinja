@@ -2,6 +2,29 @@ import type { GameObject, Particle, BladePoint, ScorePopup, ZoneConfig, PlayerSt
 
 export const PLAYER_COLORS = ['#4CAF50', '#2196F3', '#FF9800', '#E91E63'];
 
+let _shakeStrength = 0;
+let _shakeFrames = 0;
+
+export function triggerShake(strength: number, frames = 8): void {
+  _shakeStrength = Math.max(_shakeStrength, strength);
+  _shakeFrames = Math.max(_shakeFrames, frames);
+}
+
+export function beginFrame(ctx: CanvasRenderingContext2D): void {
+  ctx.save();
+  if (_shakeFrames > 0) {
+    const dx = (Math.random() - 0.5) * _shakeStrength * 2;
+    const dy = (Math.random() - 0.5) * _shakeStrength * 2;
+    ctx.translate(dx, dy);
+    _shakeStrength *= 0.80;
+    _shakeFrames--;
+  }
+}
+
+export function endFrame(ctx: CanvasRenderingContext2D): void {
+  ctx.restore();
+}
+
 export function drawBackground(ctx: CanvasRenderingContext2D, width: number, height: number): void {
   const gradient = ctx.createLinearGradient(0, 0, 0, height);
   gradient.addColorStop(0, '#0a1628');
@@ -154,12 +177,19 @@ export function drawParticles(ctx: CanvasRenderingContext2D, particles: Particle
     if (p.alpha <= 0) continue;
     ctx.save();
     ctx.globalAlpha = p.alpha;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-    ctx.fillStyle = p.color;
-    ctx.shadowColor = p.color;
-    ctx.shadowBlur = 6;
-    ctx.fill();
+    if (p.emoji) {
+      ctx.font = `${p.radius}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(p.emoji, p.x, p.y);
+    } else {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.shadowColor = p.color;
+      ctx.shadowBlur = 6;
+      ctx.fill();
+    }
     ctx.restore();
   }
 }
@@ -179,9 +209,9 @@ export function drawBlade(
     const p1 = points[i - 1];
     const p2 = points[i];
     const age = now - p2.time;
-    const alpha = Math.max(0, 1 - age / 120);
+    const alpha = Math.max(0, 1 - age / 180);
     const segProgress = i / points.length;
-    const width = 3 + segProgress * 10;
+    const width = 4 + segProgress * 14;
 
     ctx.beginPath();
     ctx.moveTo(p1.x, p1.y);

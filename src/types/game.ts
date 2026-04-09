@@ -42,6 +42,7 @@ export interface Particle {
   radius: number;
   life: number;
   maxLife: number;
+  emoji?: string;
 }
 
 export interface BladePoint {

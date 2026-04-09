@@ -9,7 +9,7 @@ import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import type { PlayerState, GameMode } from '../types/game';
 
 const PLAYER_COLORS = ['#4CAF50', '#2196F3', '#FF9800', '#E91E63'];
-const MAX_LIVES = 3;
+const MAX_LIVES = 5;
 
 const POWERUP_ICONS: Record<string, string> = {
   slowmo: '⏳',
@@ -89,13 +89,13 @@ function PlayerPanel({
         {player.score.toLocaleString()}
       </Typography>
 
-      <Box sx={{ display: 'flex', gap: 0.3, flexWrap: 'wrap', flexDirection: mirrored ? 'row-reverse' : 'row' }}>
+      <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', flexDirection: mirrored ? 'row-reverse' : 'row' }}>
         {Array.from({ length: MAX_LIVES }).map((_, i) => (
           <Box key={i} sx={{ color: i < player.lives ? '#2ecc71' : 'rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center' }}>
             {i < player.lives ? (
-              <PublicIcon sx={{ fontSize: compact ? 12 : 14 }} />
+              <PublicIcon sx={{ fontSize: compact ? 16 : 20 }} />
             ) : (
-              <HeartBrokenIcon sx={{ fontSize: compact ? 12 : 14, color: 'rgba(255,100,100,0.25)' }} />
+              <HeartBrokenIcon sx={{ fontSize: compact ? 16 : 20, color: 'rgba(255,100,100,0.25)' }} />
             )}
           </Box>
         ))}

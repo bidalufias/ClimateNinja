@@ -34,11 +34,14 @@ import {
   drawPowerupAnnouncement,
   drawChampionBadge,
   PLAYER_COLORS,
+  beginFrame,
+  endFrame,
+  triggerShake,
 } from './renderer';
 import { audio } from './audio';
 import { getPowerupLabel, getPowerupColor, POWERUP_DURATION_MS } from './powerups';
 
-const MAX_LIVES = 3;
+const MAX_LIVES = 5;
 const COMBO_RESET_FRAMES = 30;
 const FRENZY_DURATION_MS = 8000;
 const FRENZY_COMBO_THRESHOLD = 5;
@@ -175,7 +178,7 @@ export class GameEngine {
       particles: [],
       scorePopups: [],
       spawnTimer: 0,
-      nextSpawnInterval: 90,
+      nextSpawnInterval: 120,
       comboResetTimer: 0,
       protectedHitAlpha: 0,
       frenzy: { active: false, endsAt: 0 },
@@ -254,6 +257,7 @@ export class GameEngine {
         }
         zs.protectedHitAlpha = 1;
         audio.playProtectedHit();
+        triggerShake(14, 12);
         this.eliminatePlayer(zs);
         return;
       }
@@ -306,6 +310,7 @@ export class GameEngine {
         zs.player.lives--;
         obj.sliced = true;
         audio.playMiss();
+        triggerShake(8, 10);
         if (zs.player.lives <= 0) {
           this.eliminatePlayer(zs);
           return;
@@ -368,9 +373,9 @@ export class GameEngine {
   }
 
   private updateSpawnInterval(zs: ZoneState, isFrenzy: boolean): void {
-    const base = isFrenzy ? 45 : 90;
-    const reduction = Math.min(zs.player.score / 8, 55);
-    zs.nextSpawnInterval = Math.max(base - reduction, isFrenzy ? 20 : 30);
+    const base = isFrenzy ? 45 : 120;
+    const reduction = Math.min(zs.player.score / 12, 65);
+    zs.nextSpawnInterval = Math.max(base - reduction, isFrenzy ? 20 : 35);
   }
 
   private eliminatePlayer(zs: ZoneState): void {
@@ -482,6 +487,7 @@ export class GameEngine {
 
   private renderAll(now: number): void {
     const { ctx, canvas } = this;
+    beginFrame(ctx);
     drawBackground(ctx, canvas.width, canvas.height);
 
     if (this.slowMoActive) {
@@ -529,6 +535,7 @@ export class GameEngine {
         drawChampionBadge(ctx, zs.zone, zs.player.streak);
       }
     }
+    endFrame(ctx);
   }
 
   private getZoneIndexForPoint(x: number, y: number): number {

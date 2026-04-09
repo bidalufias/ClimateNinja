@@ -36,7 +36,7 @@ export function spawnObjectInZone(
       ? zone.x - def.size
       : zone.x + zone.width + def.size;
 
-    const speedScale = 0.6 + Math.min(score / 600, 0.4);
+    const speedScale = 0.45 + Math.min(score / 500, 0.45);
     const targetFrames = (38 + Math.random() * 22) / speedScale;
     let vx = zone.width / targetFrames;
     if (spawnEdge === 'right') vx = -vx;
@@ -61,9 +61,9 @@ export function spawnObjectInZone(
   const margin = 60;
   const x = zone.x + margin + Math.random() * (zone.width - margin * 2);
 
-  const peakFraction = 0.45 + Math.min(score / 1000, 0.30);
-  const jitter = (Math.random() - 0.5) * 0.10;
-  const clampedFraction = Math.min(Math.max(peakFraction + jitter, 0.18), 0.75);
+  const peakFraction = 0.55 + Math.min(score / 1000, 0.20);
+  const jitter = (Math.random() - 0.5) * 0.06;
+  const clampedFraction = Math.min(Math.max(peakFraction + jitter, 0.50), 0.80);
   const dy = zone.height * clampedFraction + def.size;
 
   if (spawnEdge === 'top') {
@@ -180,11 +180,11 @@ export function updateScorePopups(popups: ScorePopup[], dt: number): void {
 }
 
 export function createSplashParticles(obj: GameObject): Particle[] {
-  const count = 12 + Math.floor(Math.random() * 8);
+  const count = 20 + Math.floor(Math.random() * 10);
   const particles: Particle[] = [];
   for (let i = 0; i < count; i++) {
     const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
-    const speed = 2 + Math.random() * 6;
+    const speed = 3 + Math.random() * 8;
     const life = 30 + Math.random() * 30;
     particles.push({
       id: ++particleCounter,
@@ -194,10 +194,30 @@ export function createSplashParticles(obj: GameObject): Particle[] {
       vy: Math.sin(angle) * speed - 3,
       color: obj.def.splatColor,
       alpha: 1,
-      radius: 3 + Math.random() * 5,
+      radius: 4 + Math.random() * 7,
       life,
       maxLife: life,
     });
+  }
+  if (obj.def.kind === 'pollutant') {
+    const fontSize = obj.def.size * 0.55;
+    for (let h = 0; h < 2; h++) {
+      const dir = h === 0 ? -1 : 1;
+      const life = 28 + Math.random() * 20;
+      particles.push({
+        id: ++particleCounter,
+        x: obj.x,
+        y: obj.y,
+        vx: dir * (1.5 + Math.random() * 2),
+        vy: -(2 + Math.random() * 2),
+        color: obj.def.splatColor,
+        alpha: 1,
+        radius: fontSize,
+        life,
+        maxLife: life,
+        emoji: obj.def.emoji,
+      });
+    }
   }
   return particles;
 }
