@@ -1,7 +1,7 @@
 import type { BladePoint } from '../types/game';
 
-const BLADE_TRAIL_DURATION = 120;
-const MAX_BLADE_POINTS = 20;
+const BLADE_TRAIL_DURATION = 180;
+const MAX_BLADE_POINTS = 28;
 
 export class BladeTracker {
   private points: BladePoint[] = [];
