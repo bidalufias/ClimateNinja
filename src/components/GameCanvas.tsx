@@ -56,7 +56,19 @@ export default function GameCanvas({ mode, playerNames, onStateUpdate, onGameOve
       engine.destroy();
       engineRef.current = null;
     };
-  }, [mode, playerNames, handleChampionRoundEnd]);
+    // playerNames intentionally omitted: name changes are synced via updatePlayerName
+    // below, so we must not recreate the engine on every challenger name update or
+    // the pending champion round state (pendingChallenger) will be lost.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, handleChampionRoundEnd]);
+
+  // Sync player name changes to the engine without recreating it
+  useEffect(() => {
+    if (!engineRef.current) return;
+    playerNames.forEach((name, i) => {
+      engineRef.current?.updatePlayerName(i, name);
+    });
+  }, [playerNames]);
 
   useEffect(() => {
     if (!engineRef.current) return;

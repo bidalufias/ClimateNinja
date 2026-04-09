@@ -14,8 +14,8 @@ interface ChampionRoundEndProps {
 
 const PLAYER_COLORS = ['#4CAF50', '#2196F3', '#FF9800', '#E91E63'];
 
-function WinnerPanel({ winnerId, winnerStreak, winnerScore }: { winnerId: number; winnerStreak: number; winnerScore: number }) {
-  const color = PLAYER_COLORS[winnerId % 4];
+function WinnerPanel({ winnerId, winnerSide, winnerStreak, winnerScore }: { winnerId: number; winnerSide: 'left' | 'right'; winnerStreak: number; winnerScore: number }) {
+  const color = winnerSide === 'left' ? PLAYER_COLORS[0] : PLAYER_COLORS[1];
   return (
     <Box
       sx={{
@@ -193,7 +193,7 @@ export default function ChampionRoundEnd({ winnerId, winnerStreak, winnerSide, w
     >
       {winnerSide === 'left' ? (
         <>
-          <WinnerPanel winnerId={winnerId} winnerStreak={winnerStreak} winnerScore={winnerScore} />
+          <WinnerPanel winnerId={winnerId} winnerSide={winnerSide} winnerStreak={winnerStreak} winnerScore={winnerScore} />
           <Box sx={{ width: '2px', background: 'rgba(255,255,255,0.12)', flexShrink: 0 }} />
           <ChallengerPanel onNextChallenger={onNextChallenger} />
         </>
@@ -201,7 +201,7 @@ export default function ChampionRoundEnd({ winnerId, winnerStreak, winnerSide, w
         <>
           <ChallengerPanel onNextChallenger={onNextChallenger} />
           <Box sx={{ width: '2px', background: 'rgba(255,255,255,0.12)', flexShrink: 0 }} />
-          <WinnerPanel winnerId={winnerId} winnerStreak={winnerStreak} winnerScore={winnerScore} />
+          <WinnerPanel winnerId={winnerId} winnerSide={winnerSide} winnerStreak={winnerStreak} winnerScore={winnerScore} />
         </>
       )}
     </Box>
