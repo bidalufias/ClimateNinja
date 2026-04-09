@@ -1,9 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = supabaseUrl && supabaseAnonKey
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 export interface LeaderboardEntry {
   id: string;
@@ -15,6 +17,7 @@ export interface LeaderboardEntry {
 }
 
 export async function fetchTopScores(limit = 10): Promise<LeaderboardEntry[]> {
+  if (!supabase) return [];
   const { data, error } = await supabase
     .from('leaderboard')
     .select('*')
@@ -26,6 +29,7 @@ export async function fetchTopScores(limit = 10): Promise<LeaderboardEntry[]> {
 }
 
 export async function submitScore(entry: Omit<LeaderboardEntry, 'id' | 'created_at'>): Promise<void> {
+  if (!supabase) return;
   const { error } = await supabase.from('leaderboard').insert([entry]);
   if (error) throw error;
 }
