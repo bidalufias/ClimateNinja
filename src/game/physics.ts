@@ -22,6 +22,7 @@ export function spawnObjectInZone(
   score: number,
   isFrenzy: boolean,
   slowMo: boolean,
+  speedMult = 1,
 ): GameObject {
   const baseDef = pickRandomObject(score, isFrenzy);
   const sizeScale = computeSizeScale(zone);
@@ -38,11 +39,11 @@ export function spawnObjectInZone(
 
     const speedScale = 0.45 + Math.min(score / 500, 0.45);
     const targetFrames = (38 + Math.random() * 22) / speedScale;
-    let vx = zone.width / targetFrames;
+    let vx = (zone.width / targetFrames) * speedMult;
     if (spawnEdge === 'right') vx = -vx;
     if (slowMo) vx *= SLOW_MO_FACTOR;
 
-    const vy = (Math.random() - 0.5) * 3;
+    const vy = (Math.random() - 0.5) * 3 * speedMult;
 
     return {
       instanceId: ++instanceCounter,
@@ -68,9 +69,9 @@ export function spawnObjectInZone(
 
   if (spawnEdge === 'top') {
     const ySpawn = zone.y - def.size;
-    let vy = Math.sqrt(2 * GRAVITY * dy);
+    let vy = Math.sqrt(2 * GRAVITY * dy) * speedMult;
     if (slowMo) vy *= SLOW_MO_FACTOR;
-    const vx = (Math.random() - 0.5) * 4;
+    const vx = (Math.random() - 0.5) * 4 * speedMult;
 
     return {
       instanceId: ++instanceCounter,
@@ -87,9 +88,9 @@ export function spawnObjectInZone(
   }
 
   const ySpawn = zone.y + zone.height + def.size;
-  let vy = -Math.sqrt(2 * GRAVITY * dy);
+  let vy = -Math.sqrt(2 * GRAVITY * dy) * speedMult;
   if (slowMo) vy *= SLOW_MO_FACTOR;
-  const vx = (Math.random() - 0.5) * 4;
+  const vx = (Math.random() - 0.5) * 4 * speedMult;
 
   return {
     instanceId: ++instanceCounter,
@@ -110,8 +111,9 @@ export function updateObjects(
   zone: ZoneConfig,
   dt: number,
   slowMo: boolean,
+  speedMult = 1,
 ): void {
-  const g = GRAVITY * (slowMo ? SLOW_MO_FACTOR : 1);
+  const g = GRAVITY * (slowMo ? SLOW_MO_FACTOR : 1) * speedMult;
   const spawnEdge = zone.spawnEdge ?? 'bottom';
 
   for (const obj of objects) {

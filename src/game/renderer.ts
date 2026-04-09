@@ -27,9 +27,9 @@ export function endFrame(ctx: CanvasRenderingContext2D): void {
 
 export function drawBackground(ctx: CanvasRenderingContext2D, width: number, height: number): void {
   const gradient = ctx.createLinearGradient(0, 0, 0, height);
-  gradient.addColorStop(0, '#0a1628');
-  gradient.addColorStop(0.5, '#0d2137');
-  gradient.addColorStop(1, '#071020');
+  gradient.addColorStop(0, '#1a2e4a');
+  gradient.addColorStop(0.5, '#1e3558');
+  gradient.addColorStop(1, '#12213a');
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, width, height);
   drawStars(ctx, width, height);
@@ -48,7 +48,7 @@ function drawStars(ctx: CanvasRenderingContext2D, width: number, height: number)
     s = (s * 1664525 + 1013904223) & 0xffffffff;
     const r = 0.5 + (Math.abs(s) % 100) / 100;
     s = (s * 1664525 + 1013904223) & 0xffffffff;
-    const a = 0.2 + (Math.abs(s) % 100) / 200;
+    const a = 0.3 + (Math.abs(s) % 100) / 150;
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(255,255,255,${a})`;
@@ -59,7 +59,7 @@ function drawStars(ctx: CanvasRenderingContext2D, width: number, height: number)
 
 function drawHorizonGlow(ctx: CanvasRenderingContext2D, width: number, height: number): void {
   const gradient = ctx.createRadialGradient(width / 2, height, 0, width / 2, height, width * 0.8);
-  gradient.addColorStop(0, 'rgba(39,174,96,0.08)');
+  gradient.addColorStop(0, 'rgba(39,174,96,0.14)');
   gradient.addColorStop(1, 'rgba(39,174,96,0)');
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, width, height);
@@ -148,7 +148,7 @@ export function drawObject(ctx: CanvasRenderingContext2D, obj: GameObject, now: 
   }
 
   ctx.rotate(obj.rotation);
-  ctx.font = `${size}px serif`;
+  ctx.font = `${size}px 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText(obj.def.emoji, 0, 0);

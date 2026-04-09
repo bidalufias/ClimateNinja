@@ -89,7 +89,7 @@ function buildZones(mode: GameMode, canvasW: number, canvasH: number): ZoneConfi
     const half = canvasW / 2;
     return [
       { playerId: 0, x: 0, y: 0, width: half, height: canvasH },
-      { playerId: 1, x: half, y: 0, width: half, height: canvasH },
+      { playerId: 1, x: half, y: 0, width: half, height: canvasH, spawnEdge: 'top' as const },
     ];
   }
   if (mode === '4p') {
@@ -121,13 +121,15 @@ export class GameEngine {
   private nextChallengerId = 2;
   private gameOverFired = false;
   private pendingChallenger: { zs: ZoneState; newPlayerId: number } | null = null;
+  private speedMultiplier = 1;
 
-  constructor(canvas: HTMLCanvasElement, mode: GameMode, callbacks: GameCallbacks, playerNames: string[] = []) {
+  constructor(canvas: HTMLCanvasElement, mode: GameMode, callbacks: GameCallbacks, playerNames: string[] = [], speedMultiplier = 1) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d')!;
     this.mode = mode;
     this.callbacks = callbacks;
     this.playerNames = playerNames;
+    this.speedMultiplier = speedMultiplier;
   }
 
   start(): void {
@@ -178,7 +180,7 @@ export class GameEngine {
       particles: [],
       scorePopups: [],
       spawnTimer: 0,
-      nextSpawnInterval: 120,
+      nextSpawnInterval: Math.round(120 / this.speedMultiplier),
       comboResetTimer: 0,
       protectedHitAlpha: 0,
       frenzy: { active: false, endsAt: 0 },
@@ -227,7 +229,7 @@ export class GameEngine {
       zs.spawnTimer = 0;
       const count = isFrenzy ? (Math.random() < 0.5 ? 2 : 1) : (Math.random() < 0.3 ? 2 : 1);
       for (let i = 0; i < count; i++) {
-        const obj = spawnObjectInZone(zs.zone, zs.player.score, isFrenzy, this.slowMoActive);
+        const obj = spawnObjectInZone(zs.zone, zs.player.score, isFrenzy, this.slowMoActive, this.speedMultiplier);
         if (count > 1) {
           const edge = zs.zone.spawnEdge ?? 'bottom';
           if (edge === 'left' || edge === 'right') {
@@ -303,7 +305,7 @@ export class GameEngine {
       }
     }
 
-    updateObjects(zs.objects, zs.zone, dt, this.slowMoActive);
+    updateObjects(zs.objects, zs.zone, dt, this.slowMoActive, this.speedMultiplier);
 
     for (const obj of zs.objects) {
       if (obj.offScreen && !obj.sliced && obj.def.kind === 'pollutant') {
@@ -373,9 +375,10 @@ export class GameEngine {
   }
 
   private updateSpawnInterval(zs: ZoneState, isFrenzy: boolean): void {
-    const base = isFrenzy ? 45 : 120;
+    const sm = this.speedMultiplier;
+    const base = isFrenzy ? Math.round(45 / sm) : Math.round(120 / sm);
     const reduction = Math.min(zs.player.score / 12, 65);
-    zs.nextSpawnInterval = Math.max(base - reduction, isFrenzy ? 20 : 35);
+    zs.nextSpawnInterval = Math.max(base - reduction, isFrenzy ? 20 : Math.round(35 / sm));
   }
 
   private eliminatePlayer(zs: ZoneState): void {
